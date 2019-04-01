@@ -1,0 +1,489 @@
+--------------------------------------------------------------------------------
+ Program     : The Gladiator Pits.
+ Author      : Richard Woolcock (aka KaVir).
+ Last Update : 28th April 2000.
+--------------------------------------------------------------------------------
+ File        : glad.txt
+ Description : The documentation file for the Gladiator Pits mud.
+--------------------------------------------------------------------------------
+
+1. INTRODUCTION
+1.1.  About the mud
+1.2.  About the author
+1.3.  Legal stuff
+
+2. SETTING UP
+2.1.  The different files
+2.2.  Compilation
+2.3.  Starting the mud up
+
+3. STATISTICS
+3.1.  Primary Statistics
+3.1.1.   STR (Strength)
+3.1.2.   DEX (Dexterity)
+3.1.3.   STA (Stamina)
+3.1.4.   SIZ (Size)
+3.1.5.   WIT (Wits)
+3.2.  Secondary Statistics
+3.2.1.   HEALTH
+3.2.2.   ATTACK
+3.2.3.   DEFENCE
+3.2.4.   DAMAGE
+3.2.5.   SPEED
+
+4. COMMANDS
+4.1.  Basic commands
+4.1.1.   CREATE
+4.1.2.   QUIT
+4.2.  Administrative commands
+4.2.1.   SHUTDOWN
+4.3.  Information commands
+4.3.1.   WHO
+4.3.2.   COMMANDS
+4.3.3.   SCORE
+4.4.  Communication commands
+4.4.1.   SAY
+4.4.2.   CHAT
+4.4.3.   EMOTE
+4.5.  Training commands
+4.5.1.   TRAIN
+4.5.2.   LEAVE
+4.5.3.   STR
+4.5.4.   DEX
+4.5.5.   STA
+4.5.6.   SIZ
+4.5.7.   WIT
+4.6.  Combat commands
+4.6.1.   CHALLENGE
+4.6.2.   ACCEPT
+
+5. SOFTWARE NAMING CONVENTION
+5.1.  Type naming convention
+5.2.  Variable naming convention
+5.3.  Function naming convention
+
+6. FUTURE EXPANSION
+6.1.  Passwords
+6.2.  Player files
+6.3.  Gender
+6.4.  Rooms
+6.5.  Mobiles
+6.6.  Combat
+6.7.  Character advancement
+6.8.  Nobles
+6.9.  Text messages
+6.10. Help files
+6.11. Connections
+6.12. Source code
+
+7. REFERENCE SITES
+7.1.  My webpage
+7.2.  The 16K mud contest
+7.3.  The Mud Connector
+
+================================================================================
+1.     INTRODUCTION
+================================================================================
+In March 2000, Erwin Andreasen made a post to The Mud Connector with the first 
+ideas for a contest - to see who could construct the best mud in 16K or less 
+of source code.  He later tidied up the rules and gathered a group of judges, 
+all of whom had considerable mudding experience.  I decided to take part in 
+this contest, and this mud is my competition entry.
+
+--------------------------------------------------------------------------------
+1.1.   About the mud
+--------------------------------------------------------------------------------
+The Gladiator Pits is a player-vs-player deathmatch game set in a fictional 
+fighting arena.  Players are given a number of points which they can use to 
+customise their characters before engaging in one-on-one fights against other 
+characters.
+
+--------------------------------------------------------------------------------
+1.2.   About the author
+--------------------------------------------------------------------------------
+I was born on the 8th of April, 1975 - which makes me 25 years old at the time 
+of writing this.  I graduated from Portsmouth University, England, in 1996 and 
+then went to work for Smiths Industries in Cheltenham as a Software Engineer 
+developing real-time embedded software for the aerospace industry.  At the 
+beginning of May 1999 - two and a half years later - I moved to Rohde & Schwarz
+in Fleet, since which time I've been working on equipment for testing mobile 
+phones.  I have been actively involved mudding since 1993 and created a codebase
+(GodWars) while teaching myself C at the end of 1994.  Unfortunately, as it was 
+my first experience with the language - and as I didn't even had a book for 
+reference - the result was very buggy and very poorly written.  I hope that the
+Gladiator Pits will wipe away some of the contempt with which many people who 
+have seen the GodWars source code treat me - this mud is still far from perfect
+(particularly considering how much I had to squash it up to fit within the size
+limits), but I'd rather have my programming capabilities judged for this than
+for a mud I started writing five and a half years ago.
+
+--------------------------------------------------------------------------------
+1.3.   Legal stuff
+--------------------------------------------------------------------------------
+This code is copyrighted to me, however you're welcome to use it for anything 
+you wish, so long as you don't remove the copyright notices from any source 
+files containing any of the mud source code.  You can even charge money for it 
+if you wish, but I doubt anyone will pay to play unless you put in a fair bit 
+of work first.  If you do manage to create a successful mud from this, I would 
+appreciate a mention in the credits somewhere, but I don't require it.
+
+================================================================================
+2.     SETTING UP
+================================================================================
+I should hope that anyone downloading this code would know how to compile and 
+run it, but for the sake of completeness I shall give the basic instructions 
+here.  These instructions apply to a unix environment, using gcc.
+
+--------------------------------------------------------------------------------
+2.1.   The different files
+--------------------------------------------------------------------------------
+The mud consists of three files, as follows:
+
+* glad.txt:   This file - contains the documentation.
+* glad.c:     A 'C' file containing the source code for the mud engine.
+* commands.c: A 'C' file containing the source code for the mud commands.
+
+As you are now reading this document, I will assume that you've already managed 
+to untar/unzip the files into a directory.  If you've not put them in their own 
+subdirectory, I strongly advise you to do so.
+
+--------------------------------------------------------------------------------
+2.2.   Compilation
+--------------------------------------------------------------------------------
+The glad.c file pulls in the commands.c file when it is compiled, so you don't
+need to compile both files.  Assuming a unix environment, to compile the mud 
+type: "gcc -Wall glad.c".  This will create an a.out file, which you will most 
+likely want to rename to something more appropriate: "mv a.out glad" - the mud 
+executable is now called "glad".
+
+--------------------------------------------------------------------------------
+2.3.   Starting the mud up
+--------------------------------------------------------------------------------
+In order to run the mud as a background process, type: "./glad &".  This will 
+start the mud up - so make sure you're not running it (or anything else) on the 
+port already (the default port is 3000).  You can shut the mud down again with 
+either the online "shutdown" command, or by finding the process id ("ps -ux") 
+and killing it with the unix "kill" command.
+
+================================================================================
+3.     STATISTICS
+================================================================================
+Gladiators have ten different statistics - five primary and five secondary.  
+The primary statistics all start at 1 and can be increased through training, 
+with each gladiator having 25 additional points to split between them as he or 
+she wishes.  The secondary statistics are calculated entirely from the primary 
+statistics and cannot be directly manipulated or adjusted.
+
+--------------------------------------------------------------------------------
+3.1.   Primary Statistics
+--------------------------------------------------------------------------------
+3.1.1. STR (Strength): The raw physical might of your gladiator.  Each point of 
+       strength gives you one point of HEALTH and three points of DAMAGE.
+3.1.2. DEX (Dexterity): The agility and hand-eye coordination of your gladiator.
+       Each point of dexterity gives you two points of ATTACK, one point of 
+       DEFENCE and a third of a point of SPEED.
+3.1.3. STA (Stamina): The toughness and overall fitness of your gladiator.  Each
+       point of stamina gives you seven points of HEALTH.
+3.1.4. SIZ (Size): The physical size and reach of your gladiator.  Each point of
+       size gives three points of HEALTH, one point of ATTACK and one point of 
+       DAMAGE.
+3.1.5. WIT (Wits): The mental alertness and reaction speed of your gladiator.  
+       Each point of wits gives you two points of DEFENCE and two thirds of a 
+       point of SPEED.
+
+--------------------------------------------------------------------------------
+3.2.   Secondary Statistics
+--------------------------------------------------------------------------------
+3.2.1. HEALTH: The maximum pain (and damage) threshold of your gladiator.  When 
+       you have taken more damage than you have HEALTH, you die.
+3.2.2. ATTACK: The offensive fighting capabilities of your gladiator.  In 
+       combat, two D10 (10 sided dice) are rolled and added to your ATTACK to 
+       determine how successful your attack was.  If you beat your opponents 
+       DEFENCE+D10 then you inflict some damage, depending on how successful 
+       you were; beating their defence by one or more results in a half-damage 
+       punch; beating their defence by five or more results in a full-damage 
+       kick.
+3.2.3. DEFENCE: The defensive fighting capabilities of your gladiator.  In 
+       combat, a D10 is rolled and added to your DEFENCE to see how successfully
+       you were able to counter your opponents blow (as described under ATTACK).
+3.2.4. DAMAGE: The pure punching (or kicking) power of your gladiator.  In 
+       combat, you inflict this amount of damage for a kick and half this amount
+       (rounded down) for a punch.
+3.2.5. SPEED: The attack speed of your gladiator.  In combat, it takes you this 
+       many seconds to make an attack, plus three seconds to recover from your 
+       previous attack (if any) - so a gladiator with SPEED 3 gets their first 
+       attack on the third second of the fight, then another on the ninth, 
+       another on the fifteenth, etc.  This statistic is rounded down to the 
+       nearest whole second.
+
+================================================================================
+4.     COMMANDS
+================================================================================
+There are a number of commands within the mud.  You can get a list of those 
+available to you at any time by simply typing "commands".  A description of 
+the functionality of each command follows, divided up by category.
+
+--------------------------------------------------------------------------------
+4.1.   Basic commands
+--------------------------------------------------------------------------------
+4.1.1. CREATE: Allows you to create a body, if you haven't already.
+4.1.2. QUIT: Leave the mud.  You can use this mid-fight as a way to surrender 
+       (you get a 'Loss', but it's better than dying!).
+
+--------------------------------------------------------------------------------
+4.2.   Administrative commands
+--------------------------------------------------------------------------------
+4.2.1. SHUTDOWN: Shuts the mud down (requires a password).  You cannot use this 
+       command until you've created a body.
+
+--------------------------------------------------------------------------------
+4.3.   Information commands
+--------------------------------------------------------------------------------
+4.3.1. WHO: Display all players currently connected, along with their current 
+       number of wins, losses and kills.  It also informs you how many players 
+       are hidden in the crowd.
+4.3.2. COMMANDS: List the commands currently available to you.
+4.3.3. SCORE: Displays your name, status and statistics.
+
+--------------------------------------------------------------------------------
+4.4.   Communication commands
+--------------------------------------------------------------------------------
+4.4.1. SAY: Say something to everyone else in the room.
+4.4.2. CHAT: Say something to everyone else in the mud.  You cannot do this 
+       until you've created a body.
+4.4.3. EMOTE: Perform an emote (emotion) to everyone else in the room.  Your 
+       name (or "Someone in the crowd" if you've not created a body yet) will 
+       be appended to the front of the emote - eg if KaVir typed "emote grins", 
+       everyone would see "KaVir grins".
+
+--------------------------------------------------------------------------------
+4.5.   Training commands
+--------------------------------------------------------------------------------
+4.5.1. TRAIN: Moves you to the training room, where you can train your 
+       statistics.
+4.5.2. LEAVE: Leaves the training room, assuming you are there to start with.
+4.5.3. STR: Improves your strength by 1 (up to a max of 9) assuming you still 
+       have one or more free points left.
+4.5.4. DEX: Improves your dexterity by 1 (up to a max of 9) assuming you still 
+       have one or more free points left.
+4.5.5. STA: Improves your stamina by 1 (up to a max of 9) assuming you still 
+       have one or more free points left.
+4.5.6. SIZ: Improves your size by 1 (up to a max of 9) assuming you still have 
+       one or more free points left.
+4.5.7. WIT: Improves your wits by 1 (up to a max of 9) assuming you still have 
+       one or more free points left.
+
+--------------------------------------------------------------------------------
+4.6.   Combat commands
+--------------------------------------------------------------------------------
+4.6.1. CHALLENGE: Challenge another gladiator to a fight.  Can only be performed
+       while you are both in the stadium (so you can't challenge people in the 
+       training room, or while already fighting in the arena).
+4.6.2. ACCEPT: Accepts the last challenge that was made to you.
+
+================================================================================
+5.     SOFTWARE NAMING CONVENTION
+================================================================================
+In order to improve readability, I have followed a strict naming convention 
+throughout the development of the mud.
+
+--------------------------------------------------------------------------------
+5.1.   Type naming convention
+--------------------------------------------------------------------------------
+All defined types end with a "_t", indicating that they are user defined 
+types rather than standard ones.  The only exception to this is 'bool'.
+
+--------------------------------------------------------------------------------
+5.2.   Variable naming convention
+--------------------------------------------------------------------------------
+The codebase uses a form of hungarian notation to improve the readability of 
+variables.  The naming convention is a type-dependent prefix followed by a 
+capitalised variable name.  Note also that each word within the variable name 
+is capitalised rather than using underscores (so it's "MyName" rather than 
+"My_name").  For example, if you wished to declare a variable which was a 
+pointer to a structure containing personal data about a player, you might call 
+the variable something like "pstPersonalData".  The only exceptions to this 
+are loop counters, which may be named 'i' and 'j'.
+
+Storage class specifiers:
+
+   s_  static
+   r_  register
+   e_  extern
+
+Type qualifiers:
+
+   v_  volatile
+   k   const
+
+Type specifiers:
+
+   v   void
+   ch  char
+   n   short
+   i   int
+   l   long
+   f   float
+   d   double
+   u   unsigned
+   st  struct/union
+   e   enum (except for booleans, see below)
+
+Others:
+
+   b   bool
+   a_  array
+   fn  function
+   b   bool
+   p   pointer
+   t   time_t
+   s   string (rather than pa_ch!)
+   sz  NULL-terminated string (most strings use this)
+
+--------------------------------------------------------------------------------
+5.3.   Function naming convention
+--------------------------------------------------------------------------------
+Functions are capitalised in the same way as variables, but do not have any 
+prefixes.
+
+================================================================================
+6.     FUTURE EXPANSION
+================================================================================
+When I originally planned The Gladiator Pits, I had many ideas - but due to the 
+16K limit I was forced to make a number of sacrifices.  I decided to favour 
+readability over features, as long as there was at least a core game in place.  
+If you wish to expand this further, you may wish to take into account some of 
+the things described in this section.
+
+--------------------------------------------------------------------------------
+6.1.   Passwords
+--------------------------------------------------------------------------------
+As the mud stands, there are no passwords - which means that anyone can load any
+character.  If you wish to seriously run this as a game, you will *have* to add 
+some sort of password system.
+
+--------------------------------------------------------------------------------
+6.2.   Player files
+--------------------------------------------------------------------------------
+Player files are currently stored in binary.  While this is efficient, it's also
+a real pain should the files get corrupted in any way - you may wish to change 
+them to use ASCII format.  I would also suggest saving the player files in a 
+separate directory.
+
+--------------------------------------------------------------------------------
+6.3.   Gender
+--------------------------------------------------------------------------------
+Due to size limitations, I was forced to remove gender distinction.  It doesn't
+really matter for the mud as it is now, because the text messages are fairly 
+simple and there isn't really any depth to the game.  I would recommend that you
+put gender back if you wish to expand the mud, however.
+
+--------------------------------------------------------------------------------
+6.4.   Rooms
+--------------------------------------------------------------------------------
+There are no real rooms - instead, each player stores a number representing 
+their current room.  If you want people to be able to walk around and do 
+anything other than fight, you'll need to redesign this.
+
+--------------------------------------------------------------------------------
+6.5.   Mobiles
+--------------------------------------------------------------------------------
+The mud only supports players - no mobs - so if you want people to be able to 
+practice against wild animals, slaves or convicted criminals, then you will 
+probably need to add some computer-controlled mobiles.
+
+--------------------------------------------------------------------------------
+6.6.   Combat
+--------------------------------------------------------------------------------
+The combat system is very simple.  You may well wish to add the possibility for 
+combat between more than two people at once.  You may also wish to add more 
+combat messages.  Originally I had planned to include various fighting styles, 
+weapons and armour - as well as side affects from pain, encumberance and 
+exhaustion.  It would also be nice to have things like critical hits (eg a '10'
+always hits) to prevent cases of gladiators who can never hit their opponents 
+(potentially resulting in deadlock).
+
+--------------------------------------------------------------------------------
+6.7.   Character advancement
+--------------------------------------------------------------------------------
+As the mud stands, characters don't improve.  I think it would be nice to allow 
+them to earn extra points to spend on their statistics though - perhaps they 
+could earn money from fights which could be spent on training or equipment (or 
+even doctors fees)?  This would have to be done carefully in order to maintain 
+game balance.
+
+--------------------------------------------------------------------------------
+6.8.   Nobles
+--------------------------------------------------------------------------------
+Fancy adding a whole new element to the game?  Why not give players an 
+alternative to being a gladiator - being a noble!  Nobles would be able to own 
+and/or sponser gladiators, as well as place bets.  Think of it as being similar 
+to a "football manager" game - except with gladiators!  Gladiator players with 
+sponsers would obviously have the advantage of better equipment and training 
+facilities.
+
+--------------------------------------------------------------------------------
+6.9.   Text messages
+--------------------------------------------------------------------------------
+Much of the feedback to the user was trimmed or even removed due to the size 
+restrictions, thus this is an area of the mud which could do with quite a lot of
+improvement.  It would also be nice to have cheering (and jeering) from the 
+crowd, comments by the arena ref, etc.
+
+--------------------------------------------------------------------------------
+6.10.  Help files
+--------------------------------------------------------------------------------
+Because of the severe size limits of this mud I've put all the appropriate 
+information about the mud into this document - but ideally the in-game parts of 
+it should be available through online help facilities.
+
+--------------------------------------------------------------------------------
+6.11.  Connections
+--------------------------------------------------------------------------------
+If you lose link, you automatically surrender the current fight you're in - 
+ideally, you should stay in the game and be able to reconnect.  In addition the 
+mud could do with some sort of idle time-out (I originally had one, but had to 
+drop it due to size limitations).
+
+--------------------------------------------------------------------------------
+6.12.  Source code
+--------------------------------------------------------------------------------
+The code could do with reformatting.  I've basically stripped almost all 
+unnecessary white spaces (except those which Erwin's script removes anyway) to 
+squeeze extra stuff in.  In addition I've cut a few corners, using a few macros 
+(which should be either expanded or turned into inlines), a really nasty 
+#include (to bring in the commands.c file - I had to scrap the command 
+prototypes to save space, unfortunately), several instances of the "?:" 
+conditional expressions (which I generally try to avoid except in simple 
+statements) and some really awful compressing of multiple declarations onto a 
+single line (sorry, I needed the space!).  I would suggest splitting the code 
+up into separate files and creating a makefile, as well.
+
+================================================================================
+7.     REFERENCE SITES
+================================================================================
+This section details a list of sites which may be of interest to the reader.
+
+--------------------------------------------------------------------------------
+7.1.   My web page
+--------------------------------------------------------------------------------
+Address: http://www.kavir.dial.pipex.com
+My web page contains information about my various projects in the mudding world,
+including the source code for GodWars and a number of snippets I've written.
+
+--------------------------------------------------------------------------------
+7.2.   The 16K mud contest
+--------------------------------------------------------------------------------
+Address: http://www.andreasen.org/16k.shtml
+This web page contains an introduction to the competition, the rules, judges,
+contestents and FAQ.  By the time this code is available, I imagine this page 
+will also contain the results.
+
+--------------------------------------------------------------------------------
+7.3.   The Mud Connector
+--------------------------------------------------------------------------------
+Address: http://www.mudconnector.com/
+This web site contains a large list of muds and a number of discussion boards.
+It was here (on the Coders Forum) that the contest was initially discussed - and
+there has already been talk of further contests!
+
