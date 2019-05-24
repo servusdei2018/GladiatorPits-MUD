@@ -1,5 +1,7 @@
 <b><h1>Gladiator Pits</h1></b>
 
+[![Build status](https://ci.appveyor.com/api/projects/status/e4l064rgu0fe5hax?svg=true)](https://ci.appveyor.com/project/servusDei2018/gladiatorpits-mud)
+
 <h3>History</h3>
 
 Gladiator Pits is a <a href="https://en.wikipedia.org/wiki/MUD">MUD</a>, written by 
