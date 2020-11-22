@@ -1,26 +1,32 @@
-# GladiatorPits-Go
+<b><h1>Gladiator Pits</h1></b>
 
-[![Build status](Todo: add appveyor)]()
+[![Build status](https://ci.appveyor.com/api/projects/status/e4l064rgu0fe5hax?svg=true)](https://ci.appveyor.com/project/servusDei2018/gladiatorpits-mud)
 
-## About
+(Note: I rewrote this in Go [here](https://github.com/servusDei2018/GladiatorPits-Go).)
 
-This is a rewrite of [Gladiator Pits MUD](https://github.com/servusDei2018/GladiatorPits-MUD) (originally written in C) in Go.
+<h3>History</h3>
 
-### Features
+Gladiator Pits is a <a href="https://en.wikipedia.org/wiki/MUD">MUD</a>, written by 
+Richard Woolcock, who wrote the now-famous <a href="https://en.wikipedia.org/wiki/GodWars">
+GodWars</a> codebase.
 
- - Concurrent
- - Cross platform (Mac, Windows, Linux)
+Popular in the 20th century, MUDs are text-baased Multi-player games, similar to our
+modern day MMOs.
 
-## Running
+Gladiator Pits, of which this source code is the only public version (to my knowledge)
+still available, is a excellent example of a MUD, clearly commented, with precision
+and intuitivity.
 
-You may download a prebuilt, stripped and optimized binary for Windows, Mac and Linux on our [Releases](https://github.com/servusDei2018/GladiatorPits-Go/releases/latest) page, or (if you have Go installed) you may run the following command to build Gladiator Pits Go for yourself: `go build`.
+<h3>License</h3>
 
-## License
+Richard Woolcock wrote in `glad.txt`, <blockquote>This code is copyrighted to me, however you're welcome to use it for anything 
+you wish, so long as you don't remove the copyright notices from any source 
+files containing any of the mud source code.</blockquote>
 
-Copyright (C) 2020 The GladiatorPits-Go Authors. All rights reserved.
+And therefore, the most applicable license appears to be the MIT license.
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+<h3>Disclaimer</h3>
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
+I in no way claim authorship, nor authority, over this excellent piece of code,
+but release it, under its author's original terms and conditions, to the general
+public.
