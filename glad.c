@@ -44,7 +44,7 @@
  Required macros.
  ******************************************************************************/
 
-#define CMD(f)      void Cmd##f##(conn_t*pstConn,char*szTxt)
+#define CMD(f)      void Cmd##f (conn_t*pstConn,char*szTxt)
 #define NO_INPUT(t) if(!szTxt[0]) {PutOutput(pstConn,TO_USER,t);return;}
 #define NEED_BODY   if(!pstConn->pstBody) {Log("BUG[%s]: No body!\n",__FUNCTION__);return;}
 #define IP(n)      (pstConn->iIp>>(8*n))&255
@@ -110,6 +110,13 @@ void    TrainStat       (conn_t*pstConn,char*szTxt,int iStat);
 char   *StatusName      (body_t*pstBody);
 conn_t *FindPerson      (char*szTxt);
 void    Save            (body_t*pstBody);
+
+/* Utility functions */
+time_t  time            (time_t *t);
+int     strcasecmp      (const char *s1, const char *s2);
+int     getdtablesize   (void);
+void    bcopy           (const void *s1, void *s2, size_t n);
+char    *ctime          (const time_t *timer);
 
 /******************************************************************************
  Required global variables.
@@ -412,7 +419,7 @@ void PutOutput(conn_t*pstConn,out_t peOut,char*szTxt,...)
             if(pstUser!=pstConn&&ROOM(pstConn)==ROOM(pstUser))break;continue;
          case TO_WORLD:/* Text goes to all in world - except user */
             if(pstUser!=pstConn)break;continue;
-         case TO_ALL:/* Text goes to all in world - including user */
+         case TO_ALL:;/* Text goes to all in world - including user */
       }
 
       /* Determine if their prompt needs to be redrawn first */
