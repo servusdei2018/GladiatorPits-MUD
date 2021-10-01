@@ -468,10 +468,14 @@ void FlushOutput(conn_t*pstConn)
    if(pstConn->iOutLen>0)
    {
       /* Write the content of the output buffer to the socket descriptor */
-      write(pstConn->iSocket,pstConn->a_chOutBuf,pstConn->iOutLen);
+      ssize_t ret=write(pstConn->iSocket,pstConn->a_chOutBuf,pstConn->iOutLen);
 
-      /* Indicate that the output buffer is now empty */
-      pstConn->iOutLen=0;
+      if (ret >= pstConn->iOutLen) {
+         /* Indicate that the output buffer is now empty */
+         pstConn->iOutLen=0;
+      } else if (ret > 0) {
+         pstConn->iOutLen = pstConn->iOutLen - ret;
+      }
    }
 }
 
