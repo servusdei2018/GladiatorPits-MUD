@@ -93,7 +93,7 @@ void    ParseInput      (conn_t*pstConn);
 
 /* Output functions */
 void    PutOutput       (conn_t*pstConn,out_t peOut,char*szTxt,...);
-void    FlushOutput     (conn_t*pstConn);
+int     FlushOutput     (conn_t*pstConn);
 void    PutPrompt       (conn_t*pstConn);
 
 /* Connection functions */
@@ -400,6 +400,7 @@ void PutOutput(conn_t*pstConn,out_t peOut,char*szTxt,...)
    bool    bRePrompt=FALSE;
    conn_t *pstUser;
    char    a_chBuf[MAX_BUF];
+   int     flush;
 
    /* Variable arguments lists "start" macro */
    va_start(pArg,szTxt);
@@ -439,7 +440,10 @@ void PutOutput(conn_t*pstConn,out_t peOut,char*szTxt,...)
       {
          pstUser->a_chOutBuf[pstUser->iOutLen++]=*szTxt++;
          if(pstUser->iOutLen>=MAX_BUF-1)
-            FlushOutput(pstUser);
+            flush = 1;
+            while (flush != 0) {
+               flush = FlushOutput(pstUser);
+            }
       }
 
       /* Redraw the prompt if required */
@@ -460,9 +464,9 @@ void PutOutput(conn_t*pstConn,out_t peOut,char*szTxt,...)
  *
  * pstConn: The connection to be flushed.
  *
- * This function has no return value.
+ * This function returns the length of what remains to be flushed.
  */
-void FlushOutput(conn_t*pstConn)
+int FlushOutput(conn_t*pstConn)
 {
    /* Check that the connection's output buffer isn't empty */
    if(pstConn->iOutLen>0)
@@ -477,6 +481,7 @@ void FlushOutput(conn_t*pstConn)
          pstConn->iOutLen = pstConn->iOutLen - ret;
       }
    }
+   return pstConn->iOutLen;
 }
 
 
@@ -573,6 +578,8 @@ bool NewConnection(int iSocket)
  */
 void CloseConnection(conn_t*pstConn)
 {
+   int flush = 1;
+
    /* Must free their body, if they've created one */
    if(pstConn->pstBody)
    {
@@ -608,7 +615,9 @@ void CloseConnection(conn_t*pstConn)
    }
 
    /* Have a quick flush in case there is any pending output */
-   FlushOutput(pstConn);
+   while (flush != 0) {
+      flush = FlushOutput(pstConn);
+   }
 
    /* If the connection was first in the list, reset the start of list */
    if(pstFirstConn==pstConn)
@@ -645,6 +654,7 @@ void GameLoop(int iControl)
    int     iFdMax;
    time_t  tTime=0;
    conn_t *pstConn,*pstConnNext;
+   int     flush;
 
    /* Work out how many descriptors can be open at once */
    iFdMax=getdtablesize(); /* May want to error trap for -1 */
@@ -693,8 +703,12 @@ void GameLoop(int iControl)
          /* Activity on the socket but no input means dropped connection */
          if (FD_ISSET(pstConn->iSocket,&sFd)&&!GetInput(pstConn))
             CloseConnection(pstConn);
-         else /* Otherwise flush the output buffer */
-            FlushOutput(pstConn);
+         else { /* Otherwise flush the output buffer */
+            flush = 1;
+            while (flush != 0) {
+               flush = FlushOutput(pstConn);
+            }
+         }
       }
    }
    while (!bShutdown);
